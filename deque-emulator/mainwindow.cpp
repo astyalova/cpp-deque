@@ -78,9 +78,9 @@ void MainWindow::ApplyIterator() {
         ui->btn_upper_bound->setEnabled(false);
         ui->btn_lower_bound->setEnabled(false);
 
-        int endIndex = ui->list_widget->count() - 1;
-        if (endIndex >= 0) {
-            ui->list_widget->setCurrentRow(endIndex);
+        int end_index = ui->list_widget->count() - 1;
+        if (end_index >= 0) {
+            ui->list_widget->setCurrentRow(end_index);
         }
     } else {
         ui->btn_erase->setEnabled(true);
@@ -196,9 +196,9 @@ void MainWindow::on_btn_end_clicked() {
     ApplyIterator();
 }
 
-void MainWindow::on_list_widget_currentRowChanged(int currentRow) {
-    if (currentRow >= 0 && currentRow < static_cast<int>(deque_model_.items.size())) {
-        deque_model_.iterator = deque_model_.items.begin() + currentRow;
+void MainWindow::on_list_widget_currentRowChanged(int current_row) {
+    if (current_row >= 0 && current_row < static_cast<int>(deque_model_.items.size())) {
+        deque_model_.iterator = deque_model_.items.begin() + current_row;
     } else {
         deque_model_.iterator = deque_model_.items.end();
     }
@@ -261,11 +261,8 @@ void MainWindow::on_btn_max_element_clicked()
 
 void MainWindow::on_btn_merge_sort_clicked()
 {
-    auto comp = [](const std::string& str1, const std::string& str2) {
-        return str1 < str2;
-    };
 
-    deque_model_.items = MergeSort(deque_model_.items, comp);
+    deque_model_.items = MergeSort(deque_model_.items, std::less<std::string>());
 
     deque_model_.iterator = deque_model_.items.begin();
 
@@ -295,12 +292,14 @@ void MainWindow::on_btn_merge_sOrT_clicked()
 
 void MainWindow::on_btn_unique_clicked()
 {
-    if(std::is_sorted(deque_model_.items.begin(), deque_model_.items.end())) {
-        auto it = std::unique(deque_model_.items.begin(), deque_model_.items.end());
-        deque_model_.items.erase(it, deque_model_.items.end());
-        deque_model_.iterator = deque_model_.items.begin();
-        ApplyModel();
+    if(!std::is_sorted(deque_model_.items.begin(), deque_model_.items.end())) {
+        return;
     }
+
+    auto it = std::unique(deque_model_.items.begin(), deque_model_.items.end());
+    deque_model_.items.erase(it, deque_model_.items.end());
+    deque_model_.iterator = deque_model_.items.begin();
+    ApplyModel();
 }
 
 
@@ -346,24 +345,30 @@ void MainWindow::on_btn_push_front_clicked()
 
 void MainWindow::on_btn_lower_bound_clicked()
 {
+    if(!std::is_sorted(deque_model_.items.begin(), deque_model_.items.end())) {
+        return;
+    }
+
     QString text = ui->txt_elem_content->text();
     std::string str = text.toStdString();
-    if(std::is_sorted(deque_model_.items.begin(), deque_model_.items.end())) {
-        auto it = std::lower_bound(deque_model_.items.begin(), deque_model_.items.end(), str);
-        deque_model_.iterator = it;
-        ApplyModel();
-    }
+    auto it = std::lower_bound(deque_model_.items.begin(), deque_model_.items.end(), str);
+    deque_model_.iterator = it;
+    ApplyModel();
 }
 
 
 void MainWindow::on_btn_upper_bound_clicked()
 {
+    if(!std::is_sorted(deque_model_.items.begin(), deque_model_.items.end())) {
+        return;
+    }
+
     QString text = ui->txt_elem_content->text();
     std::string str = text.toStdString();
-    if(std::is_sorted(deque_model_.items.begin(), deque_model_.items.end())) {
-        auto it = std::upper_bound(deque_model_.items.begin(), deque_model_.items.end(), str);
-        deque_model_.iterator = it;
-        ApplyModel();
-    }
+    auto it = std::upper_bound(deque_model_.items.begin(), deque_model_.items.end(), str);
+    deque_model_.iterator = it;
+    ApplyModel();
 }
+
+
 

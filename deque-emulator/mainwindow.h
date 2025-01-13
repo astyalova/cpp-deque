@@ -78,6 +78,7 @@ private slots:
 
     void on_btn_upper_bound_clicked();
 
+
 private:
     void ApplyModel();
     void ApplyIterator();
